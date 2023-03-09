@@ -1,0 +1,6 @@
+name: GemGetter
+version: '${version}'
+main: plugin.gemgetter.Main
+api-version: 1.19
+commands:
+  ggstart:

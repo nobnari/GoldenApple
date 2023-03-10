@@ -9,8 +9,9 @@ public final class Main extends JavaPlugin implements Listener {
 
   @Override
   public void onEnable() {
+    saveDefaultConfig();
     Bukkit.getPluginManager().registerEvents(this, this);
-    getCommand("ggstart").setExecutor(new GGStartCommand());
+    getCommand("ggstart").setExecutor(new GGStartCommand(this));
   }
 
 

@@ -1,6 +1,8 @@
 package plugin.gemgetter.command;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.SplittableRandom;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -13,32 +15,25 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import plugin.gemgetter.Main;
-import plugin.gemgetter.data.GGData;
 
-public class GGStart implements CommandExecutor {
+public class GGStartCommand implements CommandExecutor {
   //フィールド
   private Main main;
-  private GGData data;
+  private Map<String, ItemStack[]> defaultInventories= new HashMap<>();
+  private Map<String, Boolean> status = new HashMap<>();
   //コンストラクタ
-public GGStart(Main main,GGData data){
+public GGStartCommand(Main main){
   this.main =main;
-  this.data=data;
 }
   @Override
   public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-    if(sender instanceof Player player){
-      if(!data.getStatus().get(player.getName())) {
-        World world = player.getWorld();
-        //↓初期装備保存&&ステータス変更↓
-        data.getInventory().put(player.getName(), player.getInventory().getContents());
-        data.getStatus().put(player.getName(), Boolean.TRUE);
-
-        GGInit(player);
-        world.spawnEntity(RandomSpawnLocation(player, world), RandomMonsterList());
-        player.sendMessage("ゲームスタート！");
-      }else{
-        player.sendMessage("ゲームはすでにはじまっている!!!");
-      }
+    if(sender instanceof Player player&& status.get(player.getName())==Boolean.FALSE){
+      World world = player.getWorld();
+      //↓初期装備保存↓
+      defaultInventories.put(player.getName(),player.getInventory().getContents());
+      status.put(player.getName(), Boolean.TRUE);
+      GGInitialize(player);
+      world.spawnEntity(RandomSpawnLocation(player, world), RandomMonsterList());
     }
     return false;
   }
@@ -49,7 +44,7 @@ public GGStart(Main main,GGData data){
    * 体力、空腹値も全回復する
    * @param player
    */
-  private static void GGInit(Player player) {
+  private static void GGInitialize(Player player) {
     PlayerInventory inventory = player.getInventory();
     inventory.clear();
     inventory.setHelmet(new ItemStack(Material.GOLDEN_HELMET));
@@ -90,4 +85,15 @@ public GGStart(Main main,GGData data){
     return EntityType.valueOf(monsterList.get(random));
   }
 
+  /**
+   * 初期装備入りのマップゲッター
+   * @return
+   */
+  public Map<String, ItemStack[]> getDefaultInventories(){
+    return defaultInventories;
+  }
+
+  public Map<String, Boolean> getStatus() {
+    return status;
+  }
 }

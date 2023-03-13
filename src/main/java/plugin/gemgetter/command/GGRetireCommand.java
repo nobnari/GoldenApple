@@ -4,18 +4,16 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import plugin.gemgetter.Main;
 
 public class GGRetireCommand implements CommandExecutor {
   //フィールド
-  private Main main;
+  private GGStartCommand ggs;
 
 
   //コンストラクタ
-  public GGRetireCommand(Main m) {
-    this.main=m;
+  public GGRetireCommand(GGStartCommand ggs) {
+    this.ggs=ggs;
   }
 
 
@@ -23,8 +21,9 @@ public class GGRetireCommand implements CommandExecutor {
   @Override
   public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
     if(sender instanceof Player player){
-      ItemStack[] contents = main.defaultInventories.get(player.getName());
+      ItemStack[] contents = ggs.getDefaultInventories().get(player.getName());
       player.getInventory().setContents(contents);
+      ggs.getStatus().put(player.getName(),Boolean.FALSE);
     }
       return false;
 

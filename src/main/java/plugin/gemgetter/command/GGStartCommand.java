@@ -12,7 +12,6 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import plugin.gemgetter.Main;
@@ -20,20 +19,19 @@ import plugin.gemgetter.Main;
 public class GGStartCommand implements CommandExecutor {
   //フィールド
   private Main main;
-
+  private Map<String, ItemStack[]> defaultInventories= new HashMap<>();
+  private Map<String, Boolean> status = new HashMap<>();
   //コンストラクタ
-  public GGStartCommand(Main m) {
-    this.main=m;
-  }
-
-
+public GGStartCommand(Main main){
+  this.main =main;
+}
   @Override
   public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-    if(sender instanceof Player player){
+    if(sender instanceof Player player&& status.get(player.getName())==Boolean.FALSE){
       World world = player.getWorld();
       //↓初期装備保存↓
-      main.defaultInventories.put(player.getName(),player.getInventory().getContents());
-
+      defaultInventories.put(player.getName(),player.getInventory().getContents());
+      status.put(player.getName(), Boolean.TRUE);
       GGInitialize(player);
       world.spawnEntity(RandomSpawnLocation(player, world), RandomMonsterList());
     }
@@ -76,15 +74,26 @@ public class GGStartCommand implements CommandExecutor {
     double z = l.getZ()+rz;
     return new Location(world, x, y, z);
   }
+
   /**
    * config.yml 内の monsterList からランダムでモンスターを一体返す。
    * @return EntityType
    */
-
   private EntityType RandomMonsterList() {
     List<String> monsterList=main.getConfig().getStringList("monsterList");
     int random= new SplittableRandom().nextInt(monsterList.size());
     return EntityType.valueOf(monsterList.get(random));
   }
 
+  /**
+   * 初期装備入りのマップゲッター
+   * @return
+   */
+  public Map<String, ItemStack[]> getDefaultInventories(){
+    return defaultInventories;
+  }
+
+  public Map<String, Boolean> getStatus() {
+    return status;
+  }
 }

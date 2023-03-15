@@ -1,3 +1,4 @@
 monsterList:
-    - 'ZOMBIE_HORSE'
-    - 'SKELETON_HORSE'
+    - 'SLIME'
+    - 'MAGMA_CUBE'
+    - 'SLIME'

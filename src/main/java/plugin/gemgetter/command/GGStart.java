@@ -2,16 +2,20 @@ package plugin.gemgetter.command;
 
 import java.util.List;
 import java.util.SplittableRandom;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.inventory.meta.SpawnEggMeta;
+import plugin.gemgetter.EventListener;
 import plugin.gemgetter.Main;
 import plugin.gemgetter.data.GGData;
 
@@ -19,10 +23,13 @@ public class GGStart implements CommandExecutor {
   //フィールド
   private Main main;
   private GGData data;
+  private EventListener event;
+  private int time;
   //コンストラクタ
-public GGStart(Main main,GGData data){
+public GGStart(Main main,GGData data, EventListener event){
   this.main =main;
   this.data=data;
+  this.event =event;
 }
   @Override
   public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -31,11 +38,24 @@ public GGStart(Main main,GGData data){
         World world = player.getWorld();
         //↓初期装備保存&&ステータス変更↓
         data.getInventory().put(player.getName(), player.getInventory().getContents());
-        data.getStatus().put(player.getName(), Boolean.TRUE);
+        data.getStatus().put(player.getName(),true);
+        data.getAppleSum().put(player.getName(),0);
 
         GGInit(player);
-        world.spawnEntity(RandomSpawnLocation(player, world), RandomMonsterList());
         player.sendMessage("ゲームスタート！");
+
+        Bukkit.getScheduler().runTaskTimer(main,
+            run-> {
+              if (time <= 0) {
+                run.cancel();
+                data.getStatus().put(player.getName(),false);
+                player.getInventory().setContents(data.getInventory().get(player.getName()));
+                player.sendMessage("ゲーム終了!!!累計で金のリンゴ"+data.getAppleSum().get(player.getName())+"個手に入れた！");
+                return;
+              }
+              world.spawnEntity(RandomSpawnLocation(player, world), RandomMonsterList());
+              time-=5;
+            },0,5*20);
       }else{
         player.sendMessage("ゲームはすでにはじまっている!!!");
       }
@@ -49,7 +69,7 @@ public GGStart(Main main,GGData data){
    * 体力、空腹値も全回復する
    * @param player
    */
-  private static void GGInit(Player player) {
+  private void GGInit(Player player) {
     PlayerInventory inventory = player.getInventory();
     inventory.clear();
     inventory.setHelmet(new ItemStack(Material.GOLDEN_HELMET));
@@ -60,6 +80,7 @@ public GGStart(Main main,GGData data){
     inventory.setItem(8,new ItemStack(Material.GOLDEN_APPLE));
     player.setHealth(20);
     player.setFoodLevel(20);
+    time=30;
   }
 
   /**

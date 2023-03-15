@@ -17,6 +17,7 @@ public class GGData {
 
   private Map<String, ItemStack[]> inventory= new HashMap<>();
   private Map<String, Boolean> status = new HashMap<>();
+  private Map<String,Integer> appleSum =new HashMap<>();
 
   private String playerName;
   private int appleSumPast;

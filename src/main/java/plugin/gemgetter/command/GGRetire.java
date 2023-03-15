@@ -21,7 +21,7 @@ public class GGRetire implements CommandExecutor {
     if(sender instanceof Player player){
       if(data.getStatus().get(player.getName())) {
         player.getInventory().setContents(data.getInventory().get(player.getName()));
-        data.getStatus().put(player.getName(), Boolean.FALSE);
+        data.getStatus().put(player.getName(),false);
         player.sendMessage("ゲームをリタイアしました");
       }else{
         player.sendMessage("ゲームはまだはじまっていない…");

@@ -21,7 +21,6 @@ import plugin.gemgetter.data.GGData;
 public class EventListener implements Listener {
 //フィールド
   private GGData data;
-  private int appleSum;
 //コンストラクタ
   public EventListener(GGData data) {
     this.data = data;
@@ -41,7 +40,7 @@ public class EventListener implements Listener {
     }
   }
   /**
-   * プレイヤー(ステータス：TRUE)が今得た金リンゴと所持金リンゴを足し、メッセージに出力する
+   * プレイヤー(ステータス：TRUE)が今得た金リンゴとそのプレイヤーの既所持金リンゴを足し、メッセージに出力する
    * @param e　エンティティのアイテムピック時
    */
   @EventHandler
@@ -49,16 +48,18 @@ public class EventListener implements Listener {
     if(e.getEntity() instanceof Player player
         && data.getStatus().get(player.getName())
         && e.getItem().getItemStack().getType()==Material.GOLDEN_APPLE) {
+
         ItemStack[] itemStacks = player.getInventory().getContents();
-      appleSum = e.getItem().getItemStack().getAmount();
+        int goldenApple = e.getItem().getItemStack().getAmount();
+
         for (ItemStack item : itemStacks) {
           if (Objects.nonNull(item)
               && item.getType()==Material.GOLDEN_APPLE) {
-           appleSum += item.getAmount();
+            goldenApple += item.getAmount();
           }
         }
-        player.sendMessage(appleSum+ " Golden Apples Get!");
-        data.getAppleSum().put(player.getName(),appleSum);
+        player.sendMessage(goldenApple+ " Golden Apples Get!");
+        data.getAppleSum().put(player.getName(),goldenApple);
     }
 
   }

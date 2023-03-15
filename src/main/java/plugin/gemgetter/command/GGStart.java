@@ -9,27 +9,22 @@ import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-import org.bukkit.inventory.meta.SpawnEggMeta;
 import plugin.gemgetter.EventListener;
 import plugin.gemgetter.Main;
 import plugin.gemgetter.data.GGData;
 
 public class GGStart implements CommandExecutor {
   //フィールド
-  private Main main;
-  private GGData data;
-  private EventListener event;
-  private int time;
+  private final Main main;
+  private final GGData data;
   //コンストラクタ
 public GGStart(Main main,GGData data, EventListener event){
   this.main =main;
   this.data=data;
-  this.event =event;
 }
   @Override
   public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -39,22 +34,20 @@ public GGStart(Main main,GGData data, EventListener event){
         //↓初期装備保存&&ステータス変更↓
         data.getInventory().put(player.getName(), player.getInventory().getContents());
         data.getStatus().put(player.getName(),true);
-        data.getAppleSum().put(player.getName(),0);
 
         GGInit(player);
         player.sendMessage("ゲームスタート！");
 
         Bukkit.getScheduler().runTaskTimer(main,
             run-> {
-              if (time <= 0) {
+             Integer time = data.getTime().get(player.getName());
+                if (time <= 0) {
                 run.cancel();
-                data.getStatus().put(player.getName(),false);
-                player.getInventory().setContents(data.getInventory().get(player.getName()));
-                player.sendMessage("ゲーム終了!!!累計で金のリンゴ"+data.getAppleSum().get(player.getName())+"個手に入れた！");
-                return;
+                  GGFinish(player);
+                  return;
               }
               world.spawnEntity(RandomSpawnLocation(player, world), RandomMonsterList());
-              time-=5;
+              data.getTime().put(player.getName(),time -5);
             },0,5*20);
       }else{
         player.sendMessage("ゲームはすでにはじまっている!!!");
@@ -62,7 +55,6 @@ public GGStart(Main main,GGData data, EventListener event){
     }
     return false;
   }
-
   /**
    * GGスタート時の初期設定
    * 装備フル変更(金)。
@@ -80,7 +72,34 @@ public GGStart(Main main,GGData data, EventListener event){
     inventory.setItem(8,new ItemStack(Material.GOLDEN_APPLE));
     player.setHealth(20);
     player.setFoodLevel(20);
-    time=30;
+    data.getTime().put(player.getName(),30);
+    data.getAppleSum().put(player.getName(),0);
+  }
+  /**
+   * ゲーム終了時、ステータス変更(false),メッセージ、タイトルメッセージ、装備返還を処理
+   * @param player
+   */
+  private void GGFinish(Player player) {
+    data.getStatus().put(player.getName(),false);
+    player.getInventory().setContents(data.getInventory().get(player.getName()));
+    player.sendMessage("ゲーム終了!!!  最終"+data.getAppleSum().get(player.getName())+"個");
+    player.sendTitle("Finish!!!!",Judgement(player),0,80,40);
+  }
+
+  /**
+   * ゲーム終了時にリンゴの個数に応じて星判定を出す。
+   * @param player
+   * @return String
+   */
+  private String Judgement(Player player) {
+    Integer finalScore = data.getAppleSum().get(player.getName());
+    if(finalScore>29){
+      return "Golden Delicious★★★";
+    }else if(finalScore>14){
+      return "Good Taste★★";
+    }else{
+      return"Green Apple★";
+    }
   }
 
   /**

@@ -14,12 +14,15 @@ import org.bukkit.inventory.ItemStack;
 @Setter
 public class GGData {
 
-
-  private Map<String, ItemStack[]> inventory= new HashMap<>();
+  //ステータス(ON/OFF)
   private Map<String, Boolean> status = new HashMap<>();
+
+  //ゲーム開始前の持ち物
+  private Map<String, ItemStack[]> inventory= new HashMap<>();
+
+  //持ちリンゴ
   private Map<String,Integer> appleSum =new HashMap<>();
 
-  private String playerName;
-  private int appleSumPast;
-
+  //持ち時間
+  private Map<String,Integer>time =new HashMap<>();
 }

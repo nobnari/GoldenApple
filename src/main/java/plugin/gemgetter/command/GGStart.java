@@ -13,7 +13,6 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-import plugin.gemgetter.EventListener;
 import plugin.gemgetter.Main;
 import plugin.gemgetter.data.GGData;
 
@@ -22,7 +21,7 @@ public class GGStart implements CommandExecutor {
   private final Main main;
   private final GGData data;
   //コンストラクタ
-public GGStart(Main main,GGData data, EventListener event){
+public GGStart(Main main,GGData data){
   this.main =main;
   this.data=data;
 }
@@ -59,7 +58,7 @@ public GGStart(Main main,GGData data, EventListener event){
    * GGスタート時の初期設定
    * 装備フル変更(金)。
    * 体力、空腹値も全回復する
-   * @param player
+   * @param player　コマンド実行プレイヤー
    */
   private void GGInit(Player player) {
     PlayerInventory inventory = player.getInventory();
@@ -72,30 +71,30 @@ public GGStart(Main main,GGData data, EventListener event){
     inventory.setItem(8,new ItemStack(Material.GOLDEN_APPLE));
     player.setHealth(20);
     player.setFoodLevel(20);
-    data.getTime().put(player.getName(),30);
+    data.getTime().put(player.getName(),45);
     data.getAppleSum().put(player.getName(),0);
   }
   /**
    * ゲーム終了時、ステータス変更(false),メッセージ、タイトルメッセージ、装備返還を処理
-   * @param player
+   * @param player ゲーム終了プレイヤー
    */
   private void GGFinish(Player player) {
     data.getStatus().put(player.getName(),false);
     player.getInventory().setContents(data.getInventory().get(player.getName()));
-    player.sendMessage("ゲーム終了!!!  最終"+data.getAppleSum().get(player.getName())+"個");
-    player.sendTitle("Finish!!!!",Judgement(player),0,80,40);
+    player.sendMessage("ゲーム終了!!!  今回の収穫"+data.getAppleSum().get(player.getName())+"個");
+    player.sendTitle("Finish!!!!", JudgementStar(player),0,80,40);
   }
 
   /**
    * ゲーム終了時にリンゴの個数に応じて星判定を出す。
-   * @param player
+   * @param player　ゲーム終了プレイヤー
    * @return String
    */
-  private String Judgement(Player player) {
+  private String JudgementStar(Player player) {
     Integer finalScore = data.getAppleSum().get(player.getName());
-    if(finalScore>29){
+    if(finalScore>64){
       return "Golden Delicious★★★";
-    }else if(finalScore>14){
+    }else if(finalScore>32){
       return "Good Taste★★";
     }else{
       return"Green Apple★";
@@ -106,8 +105,8 @@ public GGStart(Main main,GGData data, EventListener event){
    * プレイヤーを中心に近辺にランダムの（スポーンのための）場所を取得。
    * x,zがプラスマイナス10の幅を持つ。
    * y（高さ）はプレイヤーと同じ。
-   * @param player
-   * @param world
+   * @param player　コマンド実行プレイヤー
+   * @param world　コマンド実行プレイヤーの居るワールド
    * @return Location
    */
   private Location RandomSpawnLocation(Player player, World world) {

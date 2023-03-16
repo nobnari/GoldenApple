@@ -14,7 +14,7 @@ public final class Main extends JavaPlugin{
     GGData data = new GGData();
 
     Bukkit.getPluginManager().registerEvents(new EventListener(data),this);
-    getCommand("ggstart").setExecutor(new GGStart(this,data,new EventListener(data)));
+    getCommand("ggstart").setExecutor(new GGStart(this,data));
     getCommand("ggretire").setExecutor(new GGRetire(data));
   }
 

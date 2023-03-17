@@ -9,6 +9,7 @@ import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -21,9 +22,9 @@ public class GGStart implements CommandExecutor {
   private final Main main;
   private final GGData data;
   //コンストラクタ
-public GGStart(Main main,GGData data){
-  this.main =main;
-  this.data=data;
+public GGStart(Main main,GGData data) {
+  this.main = main;
+  this.data = data;
 }
   @Override
   public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -36,17 +37,17 @@ public GGStart(Main main,GGData data){
 
         GGInit(player);
         player.sendMessage("ゲームスタート！");
-
+        //タイマースタート
         Bukkit.getScheduler().runTaskTimer(main,
             run-> {
              Integer time = data.getTime().get(player.getName());
                 if (time <= 0) {
                 run.cancel();
-                  GGFinish(player);
-                  return;
+                GGFinish(player);
+                return;
               }
-              world.spawnEntity(RandomSpawnLocation(player, world), RandomMonsterList());
-              data.getTime().put(player.getName(),time -5);
+                world.spawnEntity(RandomSpawnLocation(player, world), RandomMonsterList());
+                data.getTime().put(player.getName(),time -5);
             },0,5*20);
       }else{
         player.sendMessage("ゲームはすでにはじまっている!!!");
@@ -71,7 +72,7 @@ public GGStart(Main main,GGData data){
     inventory.setItem(8,new ItemStack(Material.GOLDEN_APPLE));
     player.setHealth(20);
     player.setFoodLevel(20);
-    data.getTime().put(player.getName(),45);
+    data.getTime().put(player.getName(),13);
     data.getAppleSum().put(player.getName(),0);
   }
   /**
@@ -81,8 +82,22 @@ public GGStart(Main main,GGData data){
   private void GGFinish(Player player) {
     data.getStatus().put(player.getName(),false);
     player.getInventory().setContents(data.getInventory().get(player.getName()));
-    player.sendMessage("ゲーム終了!!!  今回の収穫"+data.getAppleSum().get(player.getName())+"個");
-    player.sendTitle("Finish!!!!", JudgementStar(player),0,80,40);
+    player.sendMessage("ゲーム終了!!!  今回の収穫"+data.getAppleSum().get(player.getName())+"個!!!");
+    player.sendTitle("Finish!!!!", StarRank(player),0,80,40);
+    EntityVanish(player);
+  }
+
+  /**
+   * プレイヤーの近くの特定の敵と落ちてるアイテム全てを一掃
+   * @param player　プレイヤー
+   */
+  private void EntityVanish(Player player) {
+    List<Entity> entities = player.getNearbyEntities(32, 8, 32);
+    for(Entity entity:entities){
+      switch (entity.getType()) {
+        case SLIME, MAGMA_CUBE ,DROPPED_ITEM-> entity.remove();
+      }
+    }
   }
 
   /**
@@ -90,7 +105,7 @@ public GGStart(Main main,GGData data){
    * @param player　ゲーム終了プレイヤー
    * @return String
    */
-  private String JudgementStar(Player player) {
+  private String StarRank(Player player) {
     Integer finalScore = data.getAppleSum().get(player.getName());
     if(finalScore>64){
       return "Golden Delicious★★★";

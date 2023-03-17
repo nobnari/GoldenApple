@@ -11,6 +11,7 @@ public final class Main extends JavaPlugin{
   @Override
   public void onEnable() {
     saveDefaultConfig();
+
     GGData data = new GGData();
 
     Bukkit.getPluginManager().registerEvents(new EventListener(data),this);

@@ -1,12 +1,17 @@
 package plugin.gemgetter;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
+import java.util.Set;
+import java.util.TreeSet;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.MagmaCube;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Slime;
@@ -42,7 +47,7 @@ public class EventListener implements Listener {
     if(Objects.nonNull(player)&& data.getStatus().get(player.getName())){
       ItemStack GA = new ItemStack(Material.GOLDEN_APPLE);
       GA.setAmount(SortSlimeSize(entity));
-      world.dropItem(l,GA);
+      world.dropItem(l, GA);
     }
   }
 

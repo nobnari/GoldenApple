@@ -1,33 +1,28 @@
 package plugin.gemgetter.command;
 
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
+import plugin.gemgetter.Fini;
 import plugin.gemgetter.data.GGData;
-
-public class GGRetire implements CommandExecutor {
-  //フィールド
-  private GGData data;
-
-  //コンストラクタ
-  public GGRetire(GGData data) {
+/**
+ *プレイヤーがリタイアコマンドを入力した時に実行されるクラス
+ */
+public class GGRetire extends SuperCommand {
+  private final GGData data;
+  private final Fini fini;
+  public GGRetire(GGData data, Fini fini) {
     this.data =data;
+    this.fini=fini;
   }
-
   @Override
-  public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-    if(sender instanceof Player player){
-      if(data.getStatus().get(player.getName())) {
-        player.getInventory().setContents(data.getInventory().get(player.getName()));
-        data.getStatus().put(player.getName(),false);
-        player.sendMessage("ゲームをリタイアしました");
-      }else{
-        player.sendMessage("ゲームはまだはじまっていない…");
-      }
+  public boolean PlayerDoneCommand(Player player) {
+    if(data.getStatus().get(player.getName())) {
+      player.getInventory().setContents(data.getInventory().get(player.getName()));
+      data.getStatus().put(player.getName(),false);
+      fini.EntityVanish(player);
+      player.sendMessage("ゲームをリタイアしました");
+    }else{
+      player.sendMessage("ゲームはまだはじまっていない…");
     }
-      return false;
-
+    return true;
   }
 }

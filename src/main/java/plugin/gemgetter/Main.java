@@ -13,10 +13,12 @@ public final class Main extends JavaPlugin{
     saveDefaultConfig();
 
     GGData data = new GGData();
+    Fini fini =new Fini(data);
+    Init init =new Init(this,data,fini);
 
     Bukkit.getPluginManager().registerEvents(new EventListener(data),this);
-    getCommand("ggstart").setExecutor(new GGStart(this,data));
-    getCommand("ggretire").setExecutor(new GGRetire(data));
+    getCommand("ggstart").setExecutor(new GGStart(data,init));
+    getCommand("ggretire").setExecutor(new GGRetire(data,fini));
   }
 
 

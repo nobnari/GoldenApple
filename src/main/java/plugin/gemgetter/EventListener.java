@@ -1,17 +1,10 @@
 package plugin.gemgetter;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
-import java.util.Set;
-import java.util.TreeSet;
-import lombok.Getter;
-import lombok.Setter;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.MagmaCube;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Slime;
@@ -23,12 +16,12 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 import plugin.gemgetter.data.GGData;
-@Getter
-@Setter
+
+/**
+ * ゲーム中のイベント、及びマインクラフトへの参加、離脱を監視するクラス
+ */
 public class EventListener implements Listener {
-//フィールド
-  private GGData data;
-//コンストラクタ
+  private final GGData data;
   public EventListener(GGData data) {
     this.data = data;
   }
@@ -121,7 +114,7 @@ public class EventListener implements Listener {
   }
 
   /**
-   * プレイヤーマインクラフト事態に参加した時にステータスに名前とFALSEを追加。
+   * プレイヤーマインクラフト自体に参加した時にステータスに名前とFALSEを追加。
    * @param e　プレイヤーjoin
    */
   @EventHandler

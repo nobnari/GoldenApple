@@ -17,7 +17,7 @@ public final class Main extends JavaPlugin{
     Init init =new Init(this,data,fini);
 
     Bukkit.getPluginManager().registerEvents(new EventListener(data),this);
-    getCommand("ggstart").setExecutor(new GGStart(data,init));
+    getCommand("ggstart").setExecutor(new GGStart(this,data,init));
     getCommand("ggretire").setExecutor(new GGRetire(data,fini));
   }
 

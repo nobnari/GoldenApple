@@ -1,10 +1,10 @@
 package plugin.gemgetter;
 
 import java.util.List;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import plugin.gemgetter.data.GGData;
+import plugin.gemgetter.data.Rank;
 
 /**
  * ゲームの終了に関わるクラス
@@ -16,14 +16,37 @@ public class Fini {
   }
 
   /**
-   * ゲーム終了時、ステータス変更(false),メッセージ、タイトルメッセージ、装備返還を処理
+   * ゲーム終了時、ステータス変更(false),装備返還を処理
+   * 終了メッセージ・タイトル・サウンドを出力
+   * 近くの敵など消去
+   * (主に正規終了用）
    * @param player ゲーム終了プレイヤー
    */
   public void Finisher(Player player) {
     data.getStatus().put(player.getName(),false);
     player.getInventory().setContents(data.getInventory().get(player.getName()));
-    player.sendMessage("ゲーム終了!!!  今回の収穫"+data.getAppleSum().get(player.getName())+"個!!!");
-    player.sendTitle(FinishTitle(player), StarRank(player),0,80,40);
+
+    int appleSum=data.getAppleSum().get(player.getName());
+    Rank rank=new Rank(appleSum);
+
+    player.sendMessage("ゲーム終了!!!  今回の収穫"+appleSum+"個!!!");
+    player.sendTitle(rank.getFinishColor(), rank.getResultColor(),0,80,40);
+    player.playSound(player.getLocation(),rank.getResultSound(),25,20);
+
+    EntityVanishEX(player);
+  }
+  /**
+   * 近くの敵、ドロップアイテム消去を２回行う（スライムの増殖スポーンに対する備え）
+   * @param player ゲーム終了プレイヤー
+   */
+  public void EntityVanishEX(Player player) {
+    //間を置いて２回消し↓↓↓
+    EntityVanish(player);
+    try {
+      Thread.sleep(300);
+    } catch (InterruptedException e) {
+      throw new RuntimeException(e);
+    }
     EntityVanish(player);
   }
 
@@ -37,38 +60,6 @@ public class Fini {
       switch (entity.getType()) {
         case SLIME, MAGMA_CUBE ,DROPPED_ITEM-> entity.remove();
       }
-    }
-  }
-
-  /**
-   * ゲーム終了時にリンゴの個数に応じてFINISHタイトルの色を変える。
-   * @param player　ゲーム終了プレイヤー
-   * @return String
-   */
-  private String FinishTitle(Player player) {
-    Integer finalScore = data.getAppleSum().get(player.getName());
-    if(finalScore>64){
-      return ChatColor.GOLD+"Finish!!!!";
-    }else if(finalScore>32){
-      return ChatColor.RED+"Finish!!";
-    }else{
-      return ChatColor.GREEN+"Finish!";
-    }
-  }
-
-  /**
-   * ゲーム終了時にリンゴの個数に応じて星判定を出す。
-   * @param player　ゲーム終了プレイヤー
-   * @return String
-   */
-  private String StarRank(Player player) {
-    Integer finalScore = data.getAppleSum().get(player.getName());
-    if(finalScore>64){
-      return ChatColor.GOLD+"Golden Delicious ★★★";
-    }else if(finalScore>32){
-      return ChatColor.RED+"Good Taste ★★";
-    }else{
-      return ChatColor.GREEN+"Green Apple ★";
     }
   }
 

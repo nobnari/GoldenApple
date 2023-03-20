@@ -5,6 +5,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.MagmaCube;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Slime;
@@ -27,20 +28,23 @@ public class EventListener implements Listener {
   }
 
   /**
-   * 敵が死んだ時、ステータスがTRUEのプレイヤーが倒すと金のリンゴドロップ
+   * スライムとマグマキューブが死んだ時、ステータスがTRUEのプレイヤーが倒すと金のリンゴドロップ
    * @param e　敵が死んだ時
    */
   @EventHandler
   private void onEntityDeathEvent(EntityDeathEvent e){
-    Entity entity=e.getEntity();
-    Player player = e.getEntity().getKiller();
-    World world = e.getEntity().getWorld();
-    Location l = e.getEntity().getLocation();
-
-    if(Objects.nonNull(player)&& data.getStatus().get(player.getName())){
-      ItemStack GA = new ItemStack(Material.GOLDEN_APPLE);
-      GA.setAmount(SortSlimeSize(entity));
-      world.dropItem(l, GA);
+    LivingEntity entity=e.getEntity();
+    Player player = entity.getKiller();
+    World world = entity.getWorld();
+    Location l = entity.getLocation();
+    if (Objects.nonNull(player) && data.getStatus().get(player.getName())) {
+      switch (entity.getType()) {
+          case SLIME, MAGMA_CUBE -> {
+          ItemStack GA = new ItemStack(Material.GOLDEN_APPLE);
+          GA.setAmount(SortSlimeSize(entity));
+          world.dropItem(l, GA);
+          }
+      }
     }
   }
 

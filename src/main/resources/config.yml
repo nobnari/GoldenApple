@@ -1,4 +1,13 @@
-monsterList:
+easy:
+    - 'SLIME'
+    - 'SLIME'
+    - 'SLIME'
+normal:
+    - 'SLIME'
     - 'SLIME'
     - 'MAGMA_CUBE'
+hard:
     - 'SLIME'
+    - 'MAGMA_CUBE'
+    - 'MAGMA_CUBE'
+    

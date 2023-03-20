@@ -13,7 +13,7 @@ public abstract class SuperCommand implements CommandExecutor {
   @Override
   public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
     if(sender instanceof Player player){
-      return PlayerDoneCommand(player);
+      return PlayerDoneCommand(player,command,args);
     }else{
       return false;
     }
@@ -23,6 +23,6 @@ public abstract class SuperCommand implements CommandExecutor {
    * @param player　プレイヤー
    * @return 処理の実行有無判定
    */
-  public abstract boolean PlayerDoneCommand(Player player) ;
+  public abstract boolean PlayerDoneCommand(Player player ,Command command, String[] args) ;
 
 }

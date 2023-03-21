@@ -63,7 +63,7 @@ public class Init {
     Bukkit.getScheduler().runTaskTimer(main,
         run-> {
           Integer time = data.getTime().get(player.getName());
-            if(!data.getStatus().get(player.getName())){
+            if(!data.getStatus().get(player.getName())||time<-55){
               run.cancel();
               return;
             }else if (time <= 0) {

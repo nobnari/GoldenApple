@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.ChatColor;
 import org.bukkit.Sound;
-import org.bukkit.entity.Player;
+
 @Getter
 @Setter
 public class Rank {

@@ -69,7 +69,7 @@ public class Fini {
 
   /**
    * リンゴの合計数に応じて金リンゴを与える
-   * 65異常は64固定
+   * 65以上は64固定
    * @param player　プレイヤー
    * @param appleSum　リンゴ合計数
    */

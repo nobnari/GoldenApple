@@ -16,7 +16,7 @@ public final class Main extends JavaPlugin{
     Fini fini =new Fini(data);
     Init init =new Init(this,data,fini);
 
-    Bukkit.getPluginManager().registerEvents(new EventListener(data),this);
+    Bukkit.getPluginManager().registerEvents(new EventListener(data,fini),this);
     getCommand("ggstart").setExecutor(new GGStart(this,data,init));
     getCommand("ggretire").setExecutor(new GGRetire(data,fini));
   }

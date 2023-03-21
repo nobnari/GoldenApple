@@ -13,8 +13,11 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityPickupItemEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 import plugin.gemgetter.data.GGData;
 
@@ -23,8 +26,10 @@ import plugin.gemgetter.data.GGData;
  */
 public class EventListener implements Listener {
   private final GGData data;
-  public EventListener(GGData data) {
+  private final Fini fini;
+  public EventListener(GGData data,Fini fini) {
     this.data = data;
+    this.fini=fini;
   }
 
   /**
@@ -135,6 +140,36 @@ public class EventListener implements Listener {
     Player player = e.getPlayer();
   if(data.getStatus().get(player.getName())){
       player.getInventory().setContents(data.getInventory().get(player.getName()));
+    }
+  }
+
+  /**
+   * ステータスtrueのプレイヤーが死んだタイミングで行う処理(リスポーンとセット)
+   * タイム−100でステータス維持のままゲーム強制終了、周囲の敵消去、ドロップするはずの金装備消去
+   * @param e プレイヤー(true)死亡時
+   */
+  @EventHandler
+  private void onPlayerDeathEvent(PlayerDeathEvent e) {
+    Player player = e.getEntity();
+    if (data.getStatus().get(player.getName())) {
+      data.getTime().put(player.getName(),-100);
+      fini.EntityVanishEX(player);
+      e.getDrops().clear();
+    }
+  }
+
+  /**
+   * ステータスtrueプレイヤーが死んだのちリスポーンタイミングで行う処理(デスとセット)
+   * ステータス変更、持ち物返却、メッセージ
+   * @param e プレイヤー(true)リスポーン時
+   */
+  @EventHandler
+  private void onPlayerRespawnEvent(PlayerRespawnEvent e) {
+    Player player = e.getPlayer();
+    if (data.getStatus().get(player.getName())) {
+      data.getStatus().put(player.getName(), false);
+      player.getInventory().setContents(data.getInventory().get(player.getName()));
+      player.sendMessage("このゲームは死んだら終わり…何も無い…");
     }
   }
 

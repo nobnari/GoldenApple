@@ -14,6 +14,7 @@ import plugin.gemgetter.data.GGData;
 
 /**
  * ゲームの開始に関わるクラス
+ * タイマーも扱うため終了にも少し関わる
  */
 public class Init {
   public static final int GAME_TIME = 35;

@@ -1,8 +1,10 @@
 package plugin.gemgetter;
 
 import java.util.List;
+import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import plugin.gemgetter.data.GGData;
 import plugin.gemgetter.data.Rank;
 
@@ -34,7 +36,9 @@ public class Fini {
     player.playSound(player.getLocation(),rank.getResultSound(),25,20);
 
     EntityVanishEX(player);
+    GivePrize(player, appleSum);
   }
+
   /**
    * 近くの敵、ドロップアイテム消去を２回行う（スライムの増殖スポーンに対する備え）
    * @param player ゲーム終了プレイヤー
@@ -63,4 +67,17 @@ public class Fini {
     }
   }
 
+  /**
+   * リンゴの合計数に応じて金リンゴを与える
+   * 65異常は64固定
+   * @param player　プレイヤー
+   * @param appleSum　リンゴ合計数
+   */
+  private static void GivePrize(Player player, int appleSum) {
+    if(appleSum >64){
+      player.getWorld().dropItem(player.getLocation(),new ItemStack(Material.GOLDEN_APPLE,64));
+    }else{
+      player.getWorld().dropItem(player.getLocation(),new ItemStack(Material.GOLDEN_APPLE, appleSum));
+    }
+  }
 }

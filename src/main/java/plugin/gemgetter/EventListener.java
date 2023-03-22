@@ -1,10 +1,13 @@
 package plugin.gemgetter;
 
 import java.util.Objects;
+import java.util.SplittableRandom;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.MagmaCube;
 import org.bukkit.entity.Player;
@@ -14,7 +17,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.player.PlayerEvent;
+import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
@@ -33,7 +36,7 @@ public class EventListener implements Listener {
   }
 
   /**
-   * スライムとマグマキューブが死んだ時、ステータスがTRUEのプレイヤーが倒すと金のリンゴドロップ
+   * スライムとマグマキューブが死んだ時、ステータスがTRUEのプレイヤーのKillだと金のリンゴドロップ
    * @param e　敵が死んだ時
    */
   @EventHandler
@@ -70,6 +73,53 @@ public class EventListener implements Listener {
       //拾った金リンゴとプレイヤー全所持金リンゴを足しデータに加える
       goldenApples = SumGoldenApple(player, goldenApples);
       data.getAppleSum().put(player.getName(),goldenApples);
+    }
+  }
+
+  /**
+   * スライムボール、マグマクリームでガチャ
+   * @param e アイテムドロップ時(true)
+   */
+  @EventHandler
+  private  void onPlayerDropItemEvent(PlayerDropItemEvent e){
+    Player player = e.getPlayer();
+    Item item = e.getItemDrop();
+    if(data.getStatus().get(player.getName())){
+      switch (item.getItemStack().getType()) {
+        case MAGMA_CREAM -> {
+          item.remove();
+          int random = new SplittableRandom().nextInt(8);
+          switch (random) {
+            case 0 -> {
+              item.getWorld().dropItem(item.getLocation(), new ItemStack(Material.DIAMOND_SWORD));
+              player.sendMessage("SSR!!! ダイアモンドの剣Get!!!!");
+            }
+            case 1, 2-> {
+              item.getWorld().dropItem(item.getLocation(), new ItemStack(Material.GOLDEN_SWORD));
+              player.sendMessage("SR!! 金の剣Get!!!");
+            }
+          }
+        }
+        case SLIME_BALL -> {
+          item.remove();
+          int random = new SplittableRandom().nextInt(8);
+          switch (random) {
+            case 0 -> {
+              Integer time = data.getTime().get(player.getName());
+              data.getTime().put(player.getName(), (time + 10));
+              player.playSound(player, Sound.BLOCK_GLASS_BREAK, 30, 45);
+              player.sendMessage("大当たり!! タイム10秒追加!!!");
+            }
+            case 1,2,3 -> {
+              Integer time = data.getTime().get(player.getName());
+              data.getTime().put(player.getName(), (time + 5));
+              player.playSound(player, Sound.BLOCK_GLASS_BREAK, 30, 45);
+              player.sendMessage("当たり! タイム５秒追加!!");
+            }
+
+          }
+        }
+      }
     }
   }
 
@@ -145,7 +195,7 @@ public class EventListener implements Listener {
 
   /**
    * ステータスtrueのプレイヤーが死んだタイミングで行う処理(リスポーンとセット)
-   * タイム−100でステータス維持のままゲーム強制終了、周囲の敵消去、ドロップするはずの金装備消去
+   * タイム−100でゲーム強制終了、周囲の敵消去、ドロップするはずの金装備消去
    * @param e プレイヤー(true)死亡時
    */
   @EventHandler

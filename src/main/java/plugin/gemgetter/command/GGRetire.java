@@ -14,7 +14,7 @@ public class GGRetire extends SuperCommand {
     this.data =data;
     this.fini=fini;
   }
-  @Override
+
   public boolean PlayerDoneCommand(Player player , Command command,  String[] args) {
     if(data.getStatus().get(player.getName())) {
 

@@ -1,9 +1,8 @@
 easy:
     - 'SLIME'
     - 'SLIME'
-    - 'SLIME'
+    - 'MAGMA_CUBE'
 normal:
-    - 'SLIME'
     - 'SLIME'
     - 'MAGMA_CUBE'
 hard:

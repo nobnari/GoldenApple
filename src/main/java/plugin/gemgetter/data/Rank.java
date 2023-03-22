@@ -3,18 +3,20 @@ package plugin.gemgetter.data;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.Sound;
 
 @Getter
 @Setter
 public class Rank {
-  private final int MIDDLE_BORDER=32;
-  private final int LOW_BORDER=16;
+  private final int MIDDLE_BORDER=64;
+  private final int LOW_BORDER=32;
 
 private int stars;
 private String finishColor;
 private String resultColor;
 private Sound resultSound;
+private Material prize;
 
   /**
    * 獲得リンゴに合わせて星分け。
@@ -33,17 +35,20 @@ private Sound resultSound;
     case 3 -> {
       this.finishColor = ChatColor.GOLD + "Finish!!!!";
       this.resultColor = ChatColor.GOLD + "Golden Delicious ★★★";
-      this.resultSound = Sound.ENTITY_CAT_AMBIENT;
+      this.resultSound = Sound.ENTITY_GOAT_SCREAMING_AMBIENT;
+      this.prize=Material.GOLDEN_APPLE;
     }
     case 2 -> {
       this.finishColor = ChatColor.DARK_RED + "Finish!!";
       this.resultColor = ChatColor.DARK_RED + "Good Taste ★★";
       this.resultSound = Sound.ENTITY_WOLF_AMBIENT;
+      this.prize=Material.MAGMA_CREAM;
     }
     case 1 -> {
       this.finishColor = ChatColor.DARK_GREEN + "Finish!";
       this.resultColor = ChatColor.DARK_GREEN + "Green Apple ★";
       this.resultSound = Sound.ENTITY_LLAMA_AMBIENT;
+      this.prize=Material.SLIME_BALL;
     }
   }
 

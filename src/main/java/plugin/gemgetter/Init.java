@@ -17,7 +17,7 @@ import plugin.gemgetter.data.GGData;
  * タイマーも扱うため終了にも少し関わる
  */
 public class Init {
-  public static final int GAME_TIME = 35;
+  public static final int GAME_TIME = 40;
   private final Main main;
   private final GGData data;
   private final Fini fini;

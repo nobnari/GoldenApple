@@ -21,7 +21,6 @@ public class GGStart extends SuperCommand {
       this.init=init;
     }
 
-    @Override
   public boolean PlayerDoneCommand(Player player , Command command,  String[] args) {
     if(!data.getStatus().get(player.getName())) {
       Course course = new Course(main,args);

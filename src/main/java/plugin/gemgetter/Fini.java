@@ -36,7 +36,7 @@ public class Fini {
     player.playSound(player.getLocation(),rank.getResultSound(),25,20);
 
     EntityVanishEX(player);
-    GivePrize(player, appleSum);
+    GivePrize(player,rank,appleSum);
   }
 
   /**
@@ -68,16 +68,17 @@ public class Fini {
   }
 
   /**
-   * リンゴの合計数に応じて金リンゴを与える
+   * ランクとリンゴの合計数に応じて褒美を与える
    * 65以上は64固定
    * @param player　プレイヤー
+   * @param rank ランク
    * @param appleSum　リンゴ合計数
    */
-  private static void GivePrize(Player player, int appleSum) {
+  private static void GivePrize(Player player, Rank rank,int appleSum) {
     if(appleSum >64){
-      player.getWorld().dropItem(player.getLocation(),new ItemStack(Material.GOLDEN_APPLE,64));
+      player.getWorld().dropItem(player.getLocation(),new ItemStack(rank.getPrize(),64));
     }else{
-      player.getWorld().dropItem(player.getLocation(),new ItemStack(Material.GOLDEN_APPLE, appleSum));
+      player.getWorld().dropItem(player.getLocation(),new ItemStack(rank.getPrize(), appleSum));
     }
   }
 }

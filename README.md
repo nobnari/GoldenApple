@@ -6,7 +6,7 @@ Compete with the number of "golden apples" obtained within a time limit.
 
 ## How to install
 Must have **Spigot** server installed.  
-plug SNAPSHOT.jar into the plugin directory in the server.
+Plug SNAPSHOT.jar into the plugin directory in the server.
 
 ## How to start
 Start the game with the in-game command "ggstart".  

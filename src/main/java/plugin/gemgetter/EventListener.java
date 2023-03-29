@@ -92,7 +92,7 @@ public class EventListener implements Listener {
           switch (random) {
             case 0 -> {
               item.getWorld().dropItem(item.getLocation(), new ItemStack(Material.DIAMOND_SWORD));
-              player.sendMessage("SSR!!! ダイアモンドの剣Get!!!!");
+              player.sendMessage("SSR!!! ダイヤモンドの剣Get!!!!");
             }
             case 1, 2-> {
               item.getWorld().dropItem(item.getLocation(), new ItemStack(Material.GOLDEN_SWORD));

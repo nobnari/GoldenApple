@@ -24,6 +24,7 @@ public class GGStart extends SuperCommand {
   public boolean PlayerDoneCommand(Player player , Command command,  String[] args) {
     if(!data.getStatus().get(player.getName())) {
       Course course = new Course(main,args);
+      data.getCourse().put(player.getName(),course);
       //↓初期装備保存&&ステータス変更↓
         data.getInventory().put(player.getName(), player.getInventory().getContents());
         data.getStatus().put(player.getName(), true);

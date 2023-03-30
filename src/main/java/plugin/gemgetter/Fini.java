@@ -1,10 +1,14 @@
 package plugin.gemgetter;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.Statement;
 import java.util.List;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import plugin.gemgetter.data.Course;
 import plugin.gemgetter.data.GGData;
 import plugin.gemgetter.data.Rank;
 
@@ -13,6 +17,9 @@ import plugin.gemgetter.data.Rank;
  */
 public class Fini {
   private final GGData data;
+  String url = "";
+  String username = "root";
+  String password = "";
   public Fini(GGData data) {
     this.data =data;
   }
@@ -36,6 +43,17 @@ public class Fini {
     player.playSound(player.getLocation(),rank.getResultSound(),25,20);
 
     EntityVanishEX(player);
+
+    try(Connection con = DriverManager.getConnection(url, username, password)){
+      Statement st = con.createStatement();
+      String sql = "insert player_score(player_name,score,difficulty,registered_dt) "
+          + "values('"+player.getName()+"',"+appleSum+",'" + data.getCourse().get(player.getName()).getValue() + "',now())";
+      st.executeUpdate(sql);
+
+    } catch (Exception e){
+      e.printStackTrace();
+    }
+
     GivePrize(player,rank,appleSum);
   }
 

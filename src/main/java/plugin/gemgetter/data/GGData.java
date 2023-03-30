@@ -25,6 +25,11 @@ public class GGData {
   private Map<String, ItemStack[]> inventory= new HashMap<>();
 
   /**
+   * プレイヤーごとのゲームの難易度を管理するマップ
+   */
+  private Map<String,Course> course = new HashMap<>();
+
+  /**
    * プレイヤーごとの最終リンゴピック時の所持数を管理するマップ
    */
   private Map<String,Integer> appleSum =new HashMap<>();

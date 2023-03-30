@@ -15,7 +15,7 @@ public class GGResult extends SuperCommand {
   public boolean PlayerDoneCommand(Player player, Command command, String[] args) {
       String url = "";
       String username = "root";
-      String password = "********";
+      String password = "";
 
       String sql = "select * from player_score;";
 

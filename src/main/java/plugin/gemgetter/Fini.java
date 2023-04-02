@@ -4,11 +4,9 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.Statement;
 import java.util.List;
-import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import plugin.gemgetter.data.Course;
 import plugin.gemgetter.data.GGData;
 import plugin.gemgetter.data.Rank;
 
@@ -19,7 +17,7 @@ public class Fini {
   private final GGData data;
   String url = "";
   String username = "root";
-  String password = "";
+  String password = "" ;
   public Fini(GGData data) {
     this.data =data;
   }

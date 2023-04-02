@@ -1,42 +1,45 @@
 package plugin.gemgetter.command;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
+import org.apache.ibatis.io.Resources;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.bukkit.command.Command;
 import org.bukkit.entity.Player;
+import plugin.gemgetter.Mapper.Mapper;
+import plugin.gemgetter.Mapper.PlayerScore.PlayerScore;
 
 public class GGResult extends SuperCommand {
+private final SqlSessionFactory sqlSessionFactory;
+public GGResult() {
+    try {
+      InputStream inputStream = Resources.getResourceAsStream("mybatis_config.xml");
+      this.sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+    } catch (Exception e) {
+        throw new RuntimeException(e);
+    }
+  }
 
-  public boolean PlayerDoneCommand(Player player, Command command, String[] args) {
-      String url = "";
-      String username = "root";
-      String password = "";
+  public boolean PlayerDoneCommand(Player player, Command command, String[] args){
 
-      String sql = "select * from player_score;";
-
-      try (Connection con = DriverManager.getConnection(url, username, password);
-          Statement st = con.createStatement();
-          ResultSet resultset = st.executeQuery(sql)) {
-        while (resultset.next()) {
-          int id = resultset.getInt("id");
-          String name = resultset.getString("player_name");
-          int score = resultset.getInt("score");
-          String difficulty = resultset.getString("difficulty");
-          LocalDateTime date = LocalDateTime.parse(resultset.getString("registered_dt"),
-              DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-
-          player.sendMessage(
-              id + "  " + name + "  " + score + "個  " + difficulty + "  " + date.format(
-                  DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss")));
+    try (SqlSession session = sqlSessionFactory.openSession()) {
+        Mapper mapper = session.getMapper(Mapper.class);
+        List<PlayerScore> playerScores = mapper.playerScores();
+        for (PlayerScore playerScore : playerScores) {
+            LocalDateTime date = LocalDateTime.parse(playerScore.getRegisteredDt(),
+                    DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+            player.sendMessage(playerScore.getId() + "  "
+                    + playerScore.getPlayerName() + "  "
+                    + playerScore.getScore() + "個  "
+                    + playerScore.getDifficulty() + "  "
+                    + date.format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss")));
         }
-      } catch (SQLException e) {
-        e.printStackTrace();
-      }
+    }
+
       return false;
     }
   }

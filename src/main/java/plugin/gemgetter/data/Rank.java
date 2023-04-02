@@ -42,13 +42,13 @@ private Material prize;
       this.finishColor = ChatColor.DARK_RED + "Finish!!";
       this.resultColor = ChatColor.DARK_RED + "Good Taste ★★";
       this.resultSound = Sound.ENTITY_WOLF_AMBIENT;
-      this.prize=Material.MAGMA_CREAM;
+      this.prize=Material.GOLDEN_APPLE;
     }
     case 1 -> {
       this.finishColor = ChatColor.DARK_GREEN + "Finish!";
       this.resultColor = ChatColor.DARK_GREEN + "Green Apple ★";
       this.resultSound = Sound.ENTITY_LLAMA_AMBIENT;
-      this.prize=Material.SLIME_BALL;
+      this.prize=Material.GOLDEN_APPLE;
     }
   }
 

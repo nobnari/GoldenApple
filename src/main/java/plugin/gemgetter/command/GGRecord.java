@@ -1,42 +1,32 @@
 package plugin.gemgetter.command;
 
-import java.io.InputStream;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
-import org.apache.ibatis.io.Resources;
-import org.apache.ibatis.session.SqlSession;
-import org.apache.ibatis.session.SqlSessionFactory;
-import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.bukkit.command.Command;
 import org.bukkit.entity.Player;
-import plugin.gemgetter.Mapper.Mapper;
-import plugin.gemgetter.Mapper.PlayerScore.PlayerScore;
-
+import plugin.gemgetter.DAO.Register;
+/**
+ * スコアなどを表示するコマンドの実行内容
+ */
 public class GGRecord extends SuperCommand {
-private final SqlSessionFactory sqlSessionFactory;
-public GGRecord() {
-    try {
-      InputStream inputStream = Resources.getResourceAsStream("mybatis_config.xml");
-      this.sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
-    } catch (Exception e) {
-        throw new RuntimeException(e);
-    }
-  }
+    public static final String EASY = "easy";
+    public static final String NORMAL = "normal";
+    public static final String HARD = "hard";
+    Register regi = new Register();
 
-  public boolean PlayerDoneCommand(Player player, Command command, String[] args){
-    SqlSession session = sqlSessionFactory.openSession();
-    Mapper mapper = session.getMapper(Mapper.class);
-    List<PlayerScore> playerScores = mapper.getPlayerScores();
-        for (PlayerScore playerScore : playerScores) {
-            player.sendMessage(playerScore.getId() + "  "
-                    + playerScore.getPlayerName() + "  "
-                    + playerScore.getScore() + "個  "
-                    + playerScore.getDifficulty() + "  "
-                    + playerScore.getRegisteredDt()
-                    .format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss")));
+    /**
+     * 引数ごとにランキングを分ける
+     * 引数なしの時は全ての中からランキングを表示
+     *
+     * @param player　プレイヤー
+     * @param args　引数
+     * @return 処理の実行有無判定
+     */
+    public boolean PlayerDoneCommand(Player player, Command command, String[] args){
+        if(args.length==1&&(EASY.equals(args[0])||NORMAL.equals(args[0])|| HARD.equals(args[0]))){
+            regi.displayScores(player, args[0]);
+        }else{
+            regi.displayScores(player);
         }
-        session.close();
-    return false;
+        return false;
     }
   }
 

@@ -1,16 +1,10 @@
 package plugin.gemgetter;
 
-import java.io.InputStream;
 import java.util.List;
-import org.apache.ibatis.io.Resources;
-import org.apache.ibatis.session.SqlSession;
-import org.apache.ibatis.session.SqlSessionFactory;
-import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import plugin.gemgetter.Mapper.Mapper;
-import plugin.gemgetter.Mapper.PlayerScore.PlayerScore;
+import plugin.gemgetter.DAO.Register;
 import plugin.gemgetter.data.GGData;
 import plugin.gemgetter.data.Rank;
 
@@ -18,17 +12,11 @@ import plugin.gemgetter.data.Rank;
  * ゲームの終了に関わるクラス
  */
 public class Fini {
-  private final GGData data;
-  private final SqlSessionFactory sqlSessionFactory;
 
-  public Fini(GGData data) {
-    this.data =data;
-    try {
-      InputStream inputStream = Resources.getResourceAsStream("mybatis_config.xml");
-      this.sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
-    } catch (Exception e) {
-      throw new RuntimeException(e);
-    }
+  private final GGData data;
+  Register regi =new Register();
+  Fini(GGData data){
+    this.data=data;
   }
 
   /**
@@ -54,11 +42,7 @@ public class Fini {
     //ゲーム終了時のプレゼントは邪魔なので一旦停止
    // GivePrize(player,rank,appleSum);
 
-    SqlSession session = sqlSessionFactory.openSession(true);
-    Mapper mapper = session.getMapper(Mapper.class);
-    PlayerScore playerScore = new PlayerScore(player.getName(), appleSum, data.getCourse().get(player.getName()).getValue());
-    mapper.insertPlayerScore(playerScore);
-    session.close();
+    regi.insertPlayerScore(player,appleSum,data.getCourse().get(player.getName()).getValue());
   }
 
   /**

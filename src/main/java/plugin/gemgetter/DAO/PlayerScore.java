@@ -1,4 +1,4 @@
-package plugin.gemgetter.Mapper.PlayerScore;
+package plugin.gemgetter.DAO;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -18,6 +18,6 @@
     </environment>
   </environments>
     <mappers>
-        <mapper class="plugin.gemgetter.Mapper.Mapper"/>
+        <mapper class="plugin.gemgetter.DAO.Mapper"/>
     </mappers>
 </configuration>
